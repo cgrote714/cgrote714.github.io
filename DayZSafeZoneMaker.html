@@ -6,14 +6,13 @@
 	<meta content="utf-8" http-equiv="encoding">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<title>DayZ SafeZone Maker</title>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-	
+	<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
 	<link href="https://fonts.cdnfonts.com/css/28-days-later" rel="stylesheet">
 </head>
 
@@ -88,19 +87,25 @@
 					var x2 = data[r][9];
 					var y2 = data[r][10];
 					
+					//perform basic square check (fast)
+					
 					if (
 						(sx1 >= x1 && sx1 <= x2 && sy1 >= y1 && sy1 <= y2) ||
 						(sx2 >= x1 && sx2 <= x2 && sy2 >= y1 && sy2 <= y2) ||
 						(x1 >= sx1 && x1 <= sx2 && y1 >= sy1 && y1 <= sy2) ||
 						(x2 >= sx1 && x2 <= sx2 && y2 >= sy1 && y2 <= sy2)
 						)
-					{						 
-						 var linetext = data[r][3];
-						 linetext = linetext.replace("<","&lt;");
-						 linetext = linetext.replace(">","&gt;");
-						 
-						 Log(data[r][0] + " line " + data[r][1] + " " + data[r][2] + ": <font color='blue'>" + linetext + "</font>");
-						 c++;
+					{			
+						//overlap candidate; perform circle check (slower)
+						if (CircleCheck(sx, sy, sr, data[r][4], data[r][5], data[r][6]))
+						{
+							var linetext = data[r][3];
+							linetext = linetext.replace("<","&lt;");
+							linetext = linetext.replace(">","&gt;");
+
+							Log(data[r][0] + " line " + data[r][1] + " " + data[r][2] + ": <font color='blue'>" + linetext + "</font>");
+							c++;
+						}
 					}				
 				}
 				
@@ -110,6 +115,13 @@
 			{
 				Log("<font color='red'>Error line " + error.lineNumber + " column " + error.columnNumber + ": " + error.message + "</font>");
 			}
+		}
+		
+		function CircleCheck(x1, y1, r1, x2, y2, r2) {
+			var dx = Math.abs(x2-x1);
+			var dy = Math.abs(y2-y1);
+			var dr = Math.sqrt((dx ** 2) + (dy ** 2));
+			return (dr <= (r1 + r2));
 		}
 		
 		function Log(msg)	{
