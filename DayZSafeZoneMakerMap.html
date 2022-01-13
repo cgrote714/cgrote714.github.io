@@ -50,14 +50,6 @@
 				</form>
 				<br>
 				<canvas id="can0" width="1000" height="1000" class="img-responsive" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
-				<canvas id="can1" width="256" height="256" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
-				<canvas id="can2" width="256" height="256" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
-				<canvas id="can3" width="256" height="256" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
-				<canvas id="can4" width="256" height="256" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
-				<canvas id="can5" width="256" height="256" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
-				<canvas id="can6" width="256" height="256" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
-				<canvas id="can7" width="256" height="256" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
-				<canvas id="can8" width="256" height="256" style="border:1px solid #e5e5e5;visibility:hidden;"></canvas>
 				<BR><BR>
 				<div id="div2" style="visibility:hidden;"></div>
 				<BR><BR>
@@ -164,85 +156,6 @@
 			document.getElementById("div2").appendChild(elem);
 		}
 		
-		function DrawTiles(rmap, gmap, scale)
-		{		
-			//determine map size
-			var xmin = 30000;
-			var ymin = 30000;
-			var xmax = 0;
-			var ymax = 0;
-			
-			for (let r = 0; r < rmap.length; r++)
-			{
-				if (rmap[r][7] < xmin) {xmin = rmap[r][7];}
-				if (rmap[r][8] < ymin) {ymin = rmap[r][8];}
-				if (rmap[r][9] < xmin) {xmin = rmap[r][9];}
-				if (rmap[r][10] < ymin) {ymin = rmap[r][10];}
-				
-				if (rmap[r][7] > xmax) {xmax = rmap[r][7];}
-				if (rmap[r][8] > ymax) {ymax = rmap[r][8];}
-				if (rmap[r][9] > xmax) {xmax = rmap[r][9];}
-				if (rmap[r][10] > ymax) {ymax = rmap[r][10];}
-			}
-			
-			for (let r = 0; r < gmap.length; r++)
-			{
-				if (gmap[r][7] < xmin) {xmin = gmap[r][7];}
-				if (gmap[r][8] < ymin) {ymin = gmap[r][8];}
-				if (gmap[r][9] < xmin) {xmin = gmap[r][9];}
-				if (gmap[r][10] < ymin) {ymin = gmap[r][10];}
-				
-				if (gmap[r][7] > xmax) {xmax = gmap[r][7];}
-				if (gmap[r][8] > ymax) {ymax = gmap[r][8];}
-				if (gmap[r][9] > xmax) {xmax = gmap[r][9];}
-				if (gmap[r][10] > ymax) {ymax = gmap[r][10];}
-			}	
-
-			var sx = document.getElementById("tbX").value * 1;
-			var sy = document.getElementById("tbY").value * 1;
-			var sr = document.getElementById("tbR").value * 1;	
-			if (sx-sr < xmin) {xmin = sx-sr;}
-			if (sy-sr < ymin) {ymin = sy-sr;}
-			if (sx+sr > xmax) {xmax = sx+sr;}
-			if (sy+sr > ymax) {ymax = sy+sr;}
-			
-			//determine map scale based on canvas size
-			var mapw = Math.abs(xmax - xmin);
-			var maph = Math.abs(ymax - ymin);
-			var can1 = document.getElementById("can1");
-			
-			var tilepx = 256 * scale; //iZurvive grid tile image pixels
-			var imapsize = 15922; //iZurvive magic number; the x/y coordinate of the upper right corner of 7/127/127
-			var ilevel = 7; //iZurvive zoom level (0-7)
-			var isize = imapsize/(2 ** ilevel);; //iZurvive linear coordinates per tile
-			var ix = Math.floor(xmin/isize);; //iZurvive Tile X value
-			var iy = Math.floor(ymin/isize);; //iZurvive Tile Y value
-			
-			for (let i = 7; i >= 0; i--)
-			{
-				isize = imapsize/(2 ** i);
-				ix = Math.floor(sx/isize);
-				iy = Math.floor(sy/isize);
-				var bx = ix * isize; //x coordinate bottom left
-				var by = iy * isize; //y coordinate bottom left
-				
-				var tx = (sx-bx)/isize*tilepx;
-				var ty = tilepx-((sy-by)/isize*tilepx);
-				var ctx = document.getElementById("can" + (8-i)).getContext("2d");
-				ctx.globalCompositeOperation = "destination-over";
-				
-				LoadTile(i, ix, iy, "can" + (8-i), 0, 0, 0, 0, 256, 256, tilepx, tilepx);
-				
-				ctx.strokeStyle = "#ff0000";	
-				ctx.beginPath();
-				ctx.arc(tx, ty, 5, 0, 2 * Math.PI);
-				ctx.stroke();	
-				
-				document.getElementById("can" + (8-i)).style.visibility="visible";
-			}
-
-		}
-		
 		function DrawMap(rmap, gmap)	{
 			//set map colors
 			var colorSafezone = "#0077ee"; //"#238cee";
@@ -299,7 +212,6 @@
 			if (can1.width > can1.height) {cans = can1.width;}
 			var maps = maph; //maximum map size
 			if (mapw > maph) {maps = mapw; scale = can1.width/mapw;}
-			//Log("Map w/h: " + mapw + " / " + maph + ", scale: " + scale);
 			
 			//offsets for centering
 			var xoff = 0;
@@ -361,7 +273,7 @@
 					
 			if (true)
 			{
-				//Add iZurvive map in background (under development)
+				//Add iZurvive map in background
 				
 				var tilepx = 256; //iZurvive grid tile image pixels
 				var imapsize = 15922; //iZurvive magic number; the x/y coordinate of the upper right corner of 7/127/127
