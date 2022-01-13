@@ -294,9 +294,11 @@
 				var ctx = document.getElementById("can0").getContext("2d");
 				ctx.globalAlpha = 0.5;
 				
-				for (let y = -4; y < 4; y++)
+				var tiles = Math.ceil(cans/tilepx)+1;
+				
+				for (let y = -tiles; y < tiles; y++)
 				{
-					for (let x = -4; x < 4; x++)
+					for (let x = -tiles; x < tiles; x++)
 					{
 						LoadTile(ilevel, ix+x, iy-y, "can0", gx+(tilepx*pscale*x), gy+(tilepx*pscale*y), 0, 0, tilepx, tilepx, tilepx*pscale, tilepx*pscale);
 					}
