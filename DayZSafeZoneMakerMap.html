@@ -129,7 +129,6 @@
 				
 				Log(c + " conflicts found.");
 				DrawMap(rmap, gmap);
-				//DrawTiles(rmap, gmap, 1);
 			}
 			catch (error)
 			{
@@ -218,7 +217,6 @@
 			var yoff = 0;
 			if (can1.width > mapw*scale) {xoff = (can1.width-(mapw*scale))/2; }
 			if (can1.height > maph*scale) {yoff = (can1.height-(maph*scale))/2; }
-			//Log("Offset: " + xoff + " / " + yoff);
 			
 			//clear the canvas
 			var ctx = can1.getContext("2d");
@@ -277,10 +275,10 @@
 				
 				var tilepx = 256; //iZurvive grid tile image pixels
 				var imapsize = 15922; //iZurvive magic number; the x/y coordinate of the upper right corner of 7/127/127
-				var ilevel = GetZoom(maps, cans);; //iZurvive zoom level (0-7)
-				var isize = imapsize/(2 ** ilevel);; //iZurvive linear coordinates per tile
-				var ix = Math.floor(xmin/isize);; //iZurvive Tile X value
-				var iy = Math.floor(ymin/isize);; //iZurvive Tile Y value
+				var ilevel = GetZoom(maps, cans); //iZurvive zoom level (0-7)
+				var isize = imapsize/(2 ** ilevel); //iZurvive linear coordinates per tile
+				var ix = Math.floor(xmin/isize); //iZurvive Tile X value
+				var iy = Math.floor(ymin/isize); //iZurvive Tile Y value
 				isize = imapsize/(2 ** ilevel);
 				var pscale = isize/(tilepx/cans*maps);  //proposed rescale of iZurvive tiles
 				ix = Math.floor(sx/isize);
@@ -294,7 +292,7 @@
 				var ctx = document.getElementById("can0").getContext("2d");
 				ctx.globalAlpha = 0.5;
 				
-				var tiles = Math.ceil(cans/tilepx)+1;
+				var tiles = Math.ceil(cans/(tilepx*pscale))+2;
 				
 				for (let y = -tiles; y < tiles; y++)
 				{
