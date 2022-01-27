@@ -16,7 +16,7 @@
 	<link href="https://fonts.cdnfonts.com/css/28-days-later" rel="stylesheet">
 </head>
 
-<body>
+<body onload="fnCheckUrl()">
 	<main class="container mobile-fluid">
         <div class="row">
             <div class="col-xs-12">
@@ -43,7 +43,7 @@
 						<input class="form-control" type="text" size="10" id="tbX" placeholder="x" oninput="fnParseCoordinates()" /> 
 						<input class="form-control" type="text" size="10" id="tbY" placeholder="y" />
 						<input class="form-control" type="text" size="10" id="tbR" placeholder="radius(m)" />
-						<input class="form-control btn btn-default" type="button" id="btn" value="Search" onclick="fnFindThreats()" />
+						<input class="form-control btn btn-default" type="button" id="btn" value="Search" onclick="fnSearch()" />
 						
 					<br><br>
 					<div id="div1" style="font-family:Consolas,Courier,Courier New,Times New Roman;"></div>
@@ -58,6 +58,19 @@
 	</main>
 	
 	<script>
+		function fnCheckUrl() {
+			const urlParams = new URLSearchParams(window.location.search);
+			if (document.getElementById("tbX").value == "" && urlParams.has('x') &&
+				document.getElementById("tbY").value == "" && urlParams.has('y') &&
+				document.getElementById("tbR").value == "" && urlParams.has('r'))
+				{
+					document.getElementById("tbX").value=urlParams.get('x');
+					document.getElementById("tbY").value=urlParams.get('y');
+					document.getElementById("tbR").value=urlParams.get('r');
+					fnFindThreats();
+				}
+		}
+		
 		function fnParseCoordinates()	{
 			if (document.getElementById("tbX").value.includes(" / "))
 			{
@@ -66,6 +79,16 @@
 				document.getElementById("tbY").value = xa[1];				
 				document.getElementById("tbR").select();
 			}
+		}
+		
+		function fnSearch() {
+			const urlParams = new URLSearchParams(window.location.search);
+			urlParams.set('x',document.getElementById("tbX").value);
+			urlParams.set('y',document.getElementById("tbY").value);
+			urlParams.set('r',document.getElementById("tbR").value);
+			history.replaceState(null, null, "?"+urlParams.toString());
+			
+			fnFindThreats();
 		}
 		
 		function fnFindThreats()	{
@@ -127,7 +150,7 @@
 					}				
 				}
 				
-				Log(c + " conflicts found.");
+				Log(c + " conflicts found.  Line numbers are not 100% accurate if your files were already edited.");
 				DrawMap(rmap, gmap);
 			}
 			catch (error)
